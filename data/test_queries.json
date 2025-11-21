@@ -1,0 +1,74 @@
+{
+  "test_queries": [
+    {
+      "id": 1,
+      "natural_language": "What are the top 5 highest-rated movies?",
+      "expected_tables": ["movies", "ratings"],
+      "expected_operations": ["SELECT", "JOIN", "ORDER BY", "LIMIT"],
+      "category": "simple"
+    },
+    {
+      "id": 2,
+      "natural_language": "How many movies were released each year?",
+      "expected_tables": ["movies"],
+      "expected_operations": ["SELECT", "GROUP BY", "COUNT"],
+      "category": "aggregation"
+    },
+    {
+      "id": 3,
+      "natural_language": "Show me action movies from 2020 with ratings above 7",
+      "expected_tables": ["movies", "genres", "movie_genres", "ratings"],
+      "expected_operations": ["SELECT", "JOIN", "WHERE"],
+      "category": "multi_join"
+    },
+    {
+      "id": 4,
+      "natural_language": "What's the average rating by genre?",
+      "expected_tables": ["genres", "movie_genres", "movies", "ratings"],
+      "expected_operations": ["SELECT", "JOIN", "GROUP BY", "AVG"],
+      "category": "aggregation"
+    },
+    {
+      "id": 5,
+      "natural_language": "Find movies starring Tom Hanks",
+      "expected_tables": ["movies", "people", "movie_cast"],
+      "expected_operations": ["SELECT", "JOIN", "WHERE", "ILIKE"],
+      "category": "search"
+    },
+    {
+      "id": 6,
+      "natural_language": "Which studios produced the most movies?",
+      "expected_tables": ["studios", "movie_studios"],
+      "expected_operations": ["SELECT", "JOIN", "GROUP BY", "COUNT", "ORDER BY"],
+      "category": "aggregation"
+    },
+    {
+      "id": 7,
+      "natural_language": "List all Christopher Nolan movies with their ratings",
+      "expected_tables": ["movies", "movie_crew", "people", "ratings"],
+      "expected_operations": ["SELECT", "JOIN", "WHERE"],
+      "category": "multi_join"
+    },
+    {
+      "id": 8,
+      "natural_language": "What are the total and average revenues by genre?",
+      "expected_tables": ["movies", "movie_genres", "genres"],
+      "expected_operations": ["SELECT", "JOIN", "GROUP BY", "SUM", "AVG"],
+      "category": "aggregation"
+    },
+    {
+      "id": 9,
+      "natural_language": "Show me movies that won Academy Awards",
+      "expected_tables": ["movies", "awards"],
+      "expected_operations": ["SELECT", "JOIN", "WHERE"],
+      "category": "filter"
+    },
+    {
+      "id": 10,
+      "natural_language": "Compare budget vs revenue for the top 10 highest-grossing movies",
+      "expected_tables": ["movies"],
+      "expected_operations": ["SELECT", "ORDER BY", "LIMIT"],
+      "category": "analytical"
+    }
+  ]
+}
