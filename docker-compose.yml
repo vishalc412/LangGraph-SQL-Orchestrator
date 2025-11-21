@@ -1,0 +1,89 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres_ai_db
+    environment:
+      POSTGRES_DB: movies_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./data/sample_data.sql:/docker-entrypoint-initdb.d/2-sample_data.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - agent_network
+
+  # PostgreSQL AI Agent Application
+  agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: postgres_ai_agent
+    environment:
+      POSTGRES_DATABASE_URL: "postgresql://postgres:postgres_password@postgres:5432/movies_db"
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      DEFAULT_LLM_PROVIDER: "openai"
+      CHECKPOINTER_TYPE: "sqlite"
+      LOG_LEVEL: "INFO"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    networks:
+      - agent_network
+
+  # Ollama (optional - for local LLM)
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama_server
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks:
+      - agent_network
+    profiles:
+      - local-llm
+
+  # PgAdmin (optional - database management UI)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_ui
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - postgres
+    networks:
+      - agent_network
+    profiles:
+      - dev-tools
+
+volumes:
+  postgres_data:
+  ollama_data:
+  pgadmin_data:
+
+networks:
+  agent_network:
+    driver: bridge

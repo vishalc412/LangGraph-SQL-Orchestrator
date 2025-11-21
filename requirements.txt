@@ -1,0 +1,38 @@
+# Core dependencies
+# Python 3.10+ required
+
+# LangChain and LangGraph
+langgraph>=0.2.0
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-openai>=0.0.5
+
+# Database
+psycopg2-binary>=2.9.9
+SQLAlchemy>=2.0.0
+
+# LLM Providers
+openai>=1.0.0
+requests>=2.31.0
+
+# Configuration management
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+python-dotenv>=1.0.0
+
+# SQL parsing and validation
+sqlparse>=0.4.4
+
+# Retry logic
+tenacity>=8.2.3
+
+# Utilities
+pyyaml>=6.0
+
+# Development dependencies
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+black>=23.0.0
+mypy>=1.7.0
+pylint>=3.0.0
